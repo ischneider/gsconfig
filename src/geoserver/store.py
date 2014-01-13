@@ -39,11 +39,13 @@ class DataStore(ResourceInfo):
                    type = write_string("type"),
                    connectionParameters = write_dict("connectionParameters"))
 
+    @property
+    def resource_url(self):
+        return url(self.catalog.service_url,
+            ["workspaces", self.workspace.name, "datastores", self.name, "featuretypes.xml"])
 
     def get_resources(self, name=None):
-        res_url = url(self.catalog.service_url,
-            ["workspaces", self.workspace.name, "datastores", self.name, "featuretypes.xml"])
-        xml = self.catalog.get_xml(res_url)
+        xml = self.catalog.get_xml(self.resource_url)
         def ft_from_node(node):
             return featuretype_from_index(self.catalog, self.workspace, self, node)
 
